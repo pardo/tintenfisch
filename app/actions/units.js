@@ -7,4 +7,12 @@ function addUnit(id, color, land){
     }
 }
 
-export { addUnit }
+function moveUnit(id, land){
+    return {
+        type: "MOVE_UNIT",
+        id: id,
+        land: land
+    }
+}
+
+export { addUnit, moveUnit }

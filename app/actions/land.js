@@ -1,9 +1,18 @@
-function addLand (id, color, position) {
+function addLand (id, color, position, links = {}) {
     return {
         type: "ADD_LAND",
         color: color,
         position: position,
-        id: id
+        id: id,
+        links: links
+    }
+}
+
+function changeColor (id, color) {
+    return {
+        type: "CHANGE_COLOR_LAND",
+        id: id,
+        color: color,
     }
 }
 
@@ -15,4 +24,4 @@ function addLink (id1, id2) {
     }
 }
 
-export {addLand, addLink}
+export {addLand, addLink, changeColor}

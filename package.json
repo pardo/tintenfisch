@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "dev": "webpack-dev-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server",
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,18 @@
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.0",
     "babel-preset-env": "^1.2.2",
+    "copy-webpack-plugin": "^4.0.1",
+    "standard": "^9.0.2",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "babylonjs": "^2.5.0",
     "d3": "^4.7.3",
     "immutable": "^3.8.1",
+    "jquery": "^3.2.0",
+    "keyboardjs": "^2.3.3",
+    "lodash": "^4.17.4",
     "redux": "^3.6.0"
   }
 }

@@ -8,12 +8,17 @@ class LoaderEntity extends MeshGroup {
     this.file = 'filename.obj'
   }
 
+  addToShadows (mesh) {
+    mesh.receiveShadows = true
+    this.scene.addToShadows(mesh)
+    mesh.getChildMeshes().map(mesh => { this.addToShadows(mesh) })
+  }
+
   callback (meshes) {
     this.addMeshes(meshes)
-    meshes.map(function (d) {
-      d.receiveShadows = true
-      this.scene.addToShadows(d)
-    })
+    meshes.map(function (mesh) {
+      this.addToShadows(mesh)
+    }.bind(this))
   }
 
   init () {
@@ -27,6 +32,35 @@ class TreeGround extends LoaderEntity {
     super(scene, position, BABYLON.Vector3.Zero())
     this.folder = 'assets/trees/'
     this.file = 'trees.obj'
+  }
+}
+
+class UnitBase extends LoaderEntity {
+  constructor (scene, position) {
+    super(scene, position, BABYLON.Vector3.Zero())
+    this.folder = 'assets/unit/'
+    this.file = 'unit.obj'
+  }
+
+  init () {
+    this.material = new BABYLON.StandardMaterial(null, this.scene)
+    super.init.call(this)
+  }
+
+  callback (meshes) {
+    this.addMeshes(meshes)
+    meshes.map(function (mesh) {
+      mesh.material = this.material
+      this.addToShadows(mesh)
+    }.bind(this))
+  }
+
+  set color (hexColor) {
+    this.material.diffuseColor = BABYLON.Color3.FromHexString(hexColor)
+  }
+
+  get color () {
+    return this.material.diffuseColor.toHexString()
   }
 }
 
@@ -97,4 +131,4 @@ class HexMarker extends MeshGroup {
   }
 }
 
-export { HexGround, HexMarker, TreeGround }
+export { HexGround, HexMarker, TreeGround, UnitBase }

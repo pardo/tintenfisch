@@ -69,6 +69,12 @@ class Object3d {
   get scaling () {
     return this.mesh.scaling
   }
+  hide () {
+    this.mesh.setEnabled(0)
+  }
+  show () {
+    this.mesh.setEnabled(1)
+  }
   set name (val) {
     this.mesh.name = val
   }

@@ -1,8 +1,3 @@
-import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import reducer from './reducers'
-import { addLand } from './actions/land'
-import { addUnit, moveUnit } from './actions/units'
 import { Set } from 'immutable'
 // import { render } from './d3Render'
 import * as _ from 'lodash'
@@ -11,10 +6,7 @@ import FlatCore from './flatten/core'
 import BABYLON from 'babylonjs/babylon.max'
 import { HexGround, HexMarker, TreeGround, UnitBase } from './flatten/entities'
 import ClientCore from './ClientCore'
-
-let store = createStore(
-  reducer
-)
+import { store } from './ServerStore'
 
 store.subscribe(_.debounce(function () {
 //  render(store, store.getState())
@@ -28,55 +20,6 @@ function getIdForPosition (x, y) {
   }
   return x + '#' + y
 }
-
-var size = 3 * 6
-for (var y = 0; y < size; y++) {
-  for (var x = 0; x < size / 3; x++) {
-    let links = y % 2 === 0 ? {
-      '0': getIdForPosition(x, y + 2),
-      '1': getIdForPosition(x, y + 1),
-      '2': getIdForPosition(x, y - 1),
-      '3': getIdForPosition(x, y - 2),
-      '4': getIdForPosition(x - 1, y - 1),
-      '5': getIdForPosition(x - 1, y + 1)
-    } : {
-      '0': getIdForPosition(x, (y + 2)),
-      '1': getIdForPosition((x + 1), (y + 1)),
-      '2': getIdForPosition((x + 1), (y - 1)),
-      '3': getIdForPosition(x, (y - 2)),
-      '4': getIdForPosition(x, (y - 1)),
-      '5': getIdForPosition(x, (y + 1))
-    }
-
-    let ltype, color
-    if (Math.random() > 0.5) {
-      ltype = 'tree'
-      color = '#008000'
-    } else {
-      ltype = 'dirt'
-      color = '#615428'
-    }
-
-    store.dispatch(
-      addLand(
-        getIdForPosition(x, y),
-        color,
-        { 'x': x, 'y': y },
-        ltype,
-        links
-      )
-    )
-  }
-}
-
-setTimeout(() => store.dispatch(addUnit(2, '#ffff00', '1#1')), 500 * 3)
-setTimeout(() => store.dispatch(addUnit(1, '#00ffff', '2#3')), 500 * 4)
-setTimeout(() => store.dispatch(moveUnit(2, '2#6')), 500 * 5)
-setTimeout(() => store.dispatch(moveUnit(2, '2#4')), 500 * 6)
-
-// store.getState().map.get("0#0")
-
-
 
 var $output = $('#output')
 var core = new FlatCore($output)
@@ -96,32 +39,32 @@ function convertPosition (position) {
 function render (store, state, clientState) {
   state.map.forEach(function (land) {
     land = land.toJS()
-    if (renderedLand[land.id]) { return }
+    var hg = renderedLand[land.id]
     let position = convertPosition(land.position)
-    var hg = new HexGround(
-      core.scene,
-      new BABYLON.Vector3(
-        position.x, 0, position.y
+    if (!hg) {
+      hg = new HexGround(
+        core.scene,
+        new BABYLON.Vector3(
+          position.x, 0, position.y
+        )
       )
-    )
-    hg.init()
-    hg.metadata = land
+      hg.init()
+      hg.metadata = land
+      var marker = new HexMarker(
+      core.scene,
+        new BABYLON.Vector3(
+          position.x, 0, position.y
+        )
+      )
+      marker.init()
+      marker.color = '#ff0000'
+      marker.metadata = land
+      marker.hide()
+      renderedMarkers[land.id] = marker
+      positionMarkersSet = positionMarkersSet.add(land.id)
+    }
     hg.color = land.color
-
     renderedLand[land.id] = hg
-
-    var marker = new HexMarker(
-      core.scene,
-      new BABYLON.Vector3(
-        position.x, 0, position.y
-      )
-    )
-    marker.init()
-    marker.color = '#ff0000'
-    marker.metadata = land
-    marker.hide()
-    renderedMarkers[land.id] = marker
-    positionMarkersSet = positionMarkersSet.add(land.id)
   })
 
   state.units.forEach(function (unit) {

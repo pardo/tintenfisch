@@ -25,4 +25,8 @@ function addLink (id1, id2) {
   }
 }
 
-export {addLand, addLink, changeColor}
+module.exports = {
+  addLand: addLand,
+  addLink: addLink,
+  changeColor: changeColor
+}

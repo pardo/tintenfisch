@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+var Map = require('immutable').Map
 
 const initialStateLand = Map()
 //    '1': { id: '1', color: 'red', position: { x: 0, y: 1 }, links: [ '2', '1'] }
@@ -27,4 +27,4 @@ function land (state = initialStateLand, action) {
   }
 }
 
-export default land
+module.exports = land

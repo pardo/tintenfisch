@@ -1,4 +1,5 @@
-import * as unitActions from './actions/units'
+import * as unitActions from '../gameStore/actions/units'
+
 // var state = {
 //   selectedPosition: '3#4', // position id
 //   selectedUnit: "id",
@@ -86,11 +87,10 @@ class ClientCore {
 
   moveTo (position) {
     console.log(this.selectedUnit, position)
-    this.gameStore.dispatch(
+    this.gameStore.dispatchClient(
       unitActions.moveUnit(this.selectedUnit, position)
     )
     this.unselectPosition()
-    this.clickPosition(position)
   }
   attack (position) {
 

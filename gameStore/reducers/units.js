@@ -1,4 +1,4 @@
-import { Map } from 'immutable'
+var Map = require('immutable').Map
 
 const initialState = Map()
 // '1': { id: 1, color: 'yellow', land: 2 },
@@ -19,4 +19,4 @@ function units (state = initialState, action) {
   }
 }
 
-export default units
+module.exports = units

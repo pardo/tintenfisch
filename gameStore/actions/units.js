@@ -15,4 +15,7 @@ function moveUnit (id, land) {
   }
 }
 
-export { addUnit, moveUnit }
+module.exports = {
+  addUnit: addUnit,
+  moveUnit: moveUnit
+}

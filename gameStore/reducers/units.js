@@ -9,11 +9,13 @@ function units (state = initialState, action) {
       return state.set(action.id, Map({
         'id': action.id,
         'color': action.color,
-        'land': action.land
+        'land': action.land,
+        'life': 100
       }))
     case 'MOVE_UNIT':
-      console.log(action)
       return state.setIn([action.id, 'land'], action.land)
+    case 'ATTACK_UNIT':
+      return state.setIn([action.toUnit, 'life'], life => life - action.power)
     default:
       return state
   }

@@ -15,6 +15,15 @@ function moveUnit (id, land) {
   }
 }
 
+function attackUnit (id, fromUnit, toUnit) {
+  return {
+    type: 'ATTACK_UNIT',
+    power: 50,
+    fromUnit: fromUnit,
+    toUnit: toUnit
+  }
+}
+
 module.exports = {
   addUnit: addUnit,
   moveUnit: moveUnit

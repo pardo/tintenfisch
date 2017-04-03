@@ -7,6 +7,7 @@ import BABYLON from 'babylonjs/babylon.max'
 import { HexGround, HexMarker, TreeGround, UnitBase } from './flatten/entities'
 import ClientCore from './ClientCore'
 import { store } from './ServerStore'
+import dat from 'dat.gui/build/dat.gui'
 
 store.subscribe(_.debounce(function () {
 //  render(store, store.getState())
@@ -130,3 +131,18 @@ function updateClientRender () {
     })
   }
 }
+
+
+var gui = new dat.GUI()
+var lightFolder = gui.addFolder('Light Direction')
+lightFolder.add(core.light.direction, 'x', null, { min: -10, max: 10, step: 0.1 })
+lightFolder.add(core.light.direction, 'y', { min: -10, max: 10, step: 0.1 })
+lightFolder.add(core.light.direction, 'z', { min: -10, max: 10, step: 0.1 })
+
+
+var cameraFolder = gui.addFolder('Camera')
+cameraFolder.add(core.camera.camera.position, 'x', -100, 100).listen()
+cameraFolder.add(core.camera.camera.position, 'y', -100, 100).listen()
+cameraFolder.add(core.camera.camera.position, 'z', -100, 100).listen()
+cameraFolder.add(core.camera.camera.position, 'z', -100, 100).listen()
+cameraFolder.add(core.camera, 'distance', -100, 100).listen()

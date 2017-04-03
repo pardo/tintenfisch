@@ -1,6 +1,21 @@
 import BABYLON from 'babylonjs/babylon.max'
 import { MeshGroup } from './objects'
 
+
+var loaderCache = {}
+function loadMesh (folder, file, scene) {
+  if (!loaderCache[ folder + file ]) {
+    loaderCache[ folder + file ] = new Promise(function (resolve, reject) {
+      BABYLON.SceneLoader.ImportMesh(null, folder, file, scene, function (meshes) {
+        meshes.map(m => m.setEnabled(0))
+        resolve(meshes)
+      })
+    })
+  }
+  return loaderCache[ folder + file ]
+}
+
+
 class LoaderEntity extends MeshGroup {
   constructor (scene, position) {
     super(scene, position, BABYLON.Vector3.Zero())
@@ -23,7 +38,10 @@ class LoaderEntity extends MeshGroup {
 
   init () {
     super.init.call(this)
-    BABYLON.SceneLoader.ImportMesh(null, this.folder, this.file, this.scene, this.callback.bind(this))
+    var callback = this.callback.bind(this)
+    loadMesh(this.folder, this.file, this.scene).then(function (meshes) {
+      callback(meshes.map(m => m.clone()))
+    })
   }
 }
 
@@ -69,17 +87,13 @@ class HexGround extends MeshGroup {
     super(scene, position, BABYLON.Vector3.Zero())
   }
 
-  // find a way to avoid load multiple times
-  static loadMesh (scene, callback) {
-    BABYLON.SceneLoader.ImportMesh(null, 'assets/ground/', 'ground.obj', scene, callback)
-  }
-
   init () {
     super.init.call(this)
     var hg = this
     this.castShadows = false
     this.material = new BABYLON.StandardMaterial(null, this.scene)
-    HexGround.loadMesh(this.scene, function (meshes) {
+    loadMesh('assets/ground/', 'ground.obj', this.scene).then(function (meshes) {
+      meshes = meshes.map(m => m.clone())
       hg.addMeshes(meshes)
       meshes.map(function (d) {
         d.material = hg.material
@@ -103,16 +117,12 @@ class HexMarker extends MeshGroup {
     super(scene, position, BABYLON.Vector3.Zero())
   }
 
-  // find a way to avoid load multiple times
-  static loadMesh (scene, callback) {
-    BABYLON.SceneLoader.ImportMesh(null, 'assets/marker/', 'marker.obj', scene, callback)
-  }
-
   init () {
     super.init.call(this)
     var hg = this
     this.material = new BABYLON.StandardMaterial(null, this.scene)
-    HexMarker.loadMesh(this.scene, function (meshes) {
+    loadMesh('assets/marker/', 'marker.obj', this.scene).then(function (meshes) {
+      meshes = meshes.map(m => m.clone())
       hg.addMeshes(meshes)
       meshes.map(function (d) {
         d.material = hg.material

@@ -36,11 +36,10 @@ class FlatCore {
     let light = new BABYLON.DirectionalLight('dir01', new BABYLON.Vector3(1, -1, -0.5), this.scene)
         // let light = new BABYLON.PointLight("dir01", new BABYLON.Vector3(0, 3, 0), this.scene);
         // let light = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(1, -4, -0.5), scene);
-
+    this.light = light
     this.shadowGenerator = new BABYLON.ShadowGenerator(2048, light)
     this.shadowGenerator.bias = 0.000001
     this.scene.shadowGenerator = this.shadowGenerator
-
     this.scene.castShadows = function (mesh) {
       let meshes = this.shadowGenerator.getShadowMap().renderList
       let index = meshes.indexOf(mesh)
@@ -66,15 +65,12 @@ class FlatCore {
         new BABYLON.Vector3(1, -4, -0.5),
         this.scene
     )
-
+    this.ambientLight = ambientLight
     ambientLight.groundColor = new BABYLON.Color3(0.5, 0.5, 0.5)
-
-    // create a built-in "sphere" shape; its constructor takes 5 params: name, width, depth, subdivisions, scene
-    // this.sphere = BABYLON.Mesh.CreateSphere('sphere1', 8, 0.5, this.scene);
-
     // return the created scene
-    // var ssao = new BABYLON.SSAORenderingPipeline("ssao", scene, 0.5);
-    // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline("ssao", camera);
+    // var ssao = new BABYLON.SSAORenderingPipeline('ssao', this.scene, 0.7)
+    // this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', this.camera.camera)
+    // this.scene.postProcessRenderPipelineManager.enableEffectInPipeline("ssao", ssao.SSAOCombineRenderEffect, this.camera.camera)     
   }
 
   renderLoop () {
